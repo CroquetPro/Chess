@@ -13,8 +13,9 @@ class SlidingPiece < Piece
         row += dir[0]
         col += dir[1]
         poss_move = [row, col]
+        return moves if !in_bounds?(poss_move)
         return moves if friend?(poss_move)
-        moves << poss_move if in_bounds?(poss_move)
+        moves << poss_move
         return moves if enemy?(poss_move)
       end
 

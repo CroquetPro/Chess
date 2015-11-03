@@ -3,13 +3,15 @@ require_relative 'stepping_piece.rb'
 require_relative 'pawn.rb'
 require_relative 'piece.rb'
 require_relative 'display.rb'
+require 'byebug'
 
 class Board
   attr_accessor :grid
 
-  def initialize
+  def initialize(real_board = true)
+    real_board = real_board
     @grid = Array.new(8) {Array.new(8)}
-    self.populate
+    self.populate if real_board
   end
 
   def [](pos)
@@ -24,7 +26,6 @@ class Board
 
   def populate
     @grid.each_with_index do |row, row_idx|
-
       row.each_with_index do |val, col_idx|
         if row_idx < 2
           color = :black
@@ -63,7 +64,6 @@ class Board
           @grid[row_idx][col_idx] = NullPiece.new
         end
       end
-
     end
   end
 
@@ -71,32 +71,100 @@ class Board
     raise "No piece at #{start_pos}." if self[start_pos].nil?
     raise "Invalid move" if valid_pos?(start_pos, end_pos)
 
-
     self[start_pos], self[end_pos] = nil, self[start_pos]
 
   end
 
-  def valid_pos?(start_pos, end_pos)
-    return false unless in_bounds?(start_pos) && in_bounds?(end_pos)
-
-    #piece.moves
-
+  def in_check?(color)
+    king_pos = find_king(color)
+    enemy_color = ((color == :white) ? :black : :white)
+    all_moves(enemy_color).include?(king_pos)
   end
 
-  def in_bounds?(pos)
+  def checkmate?(color)
+    # debugger
+    valid_moves = []
+
+    @grid.each do |row|
+      row.each do |piece|
+        next if piece.color != color
+        valid_moves << piece.valid_moves
+      end
+    end
+
+    return true if in_check?(color) && valid_moves.empty?
+    return false
+  end
+
+  def all_moves(color) # PRIVATE?
+    all_moves = []
+
+    @grid.each do |row|
+      row.each do |piece|
+        if piece.color == color
+          all_moves.concat(piece.moves)
+        end
+      end
+    end
+
+    all_moves
+  end
+
+  def find_king(color) #PRIVATE?
+    @grid.each_with_index do |row, row_idx|
+      row.each_with_index do |val, col_idx|
+        if val.color == color && val.symbol == :K
+          return [row_idx, col_idx]
+        end
+      end
+    end
+  end
+
+  def dup
+    duped_board = Board.new(false)
+    self.grid.each_with_index do |row, row_idx|
+      row.each_with_index do |piece, col_idx|
+        color, pos = piece.color, [row_idx, col_idx]
+        duped_board[pos] = piece.class.new(duped_board, color, pos)
+      end
+    end
+
+    duped_board
+  end
+
+  def move!(start_pos, end_pos)
+    # debugger
+    start = self[start_pos]
+    target = self[end_pos]
+
+    if target.is_a?(NullPiece)
+      start, target = target, start
+    elsif target.enemy?(end_pos)
+      start, target = NullPiece.new, start
+    end
+  end
+
+  # def valid_move?(start_pos, end_pos)
+  #   return false unless in_bounds?(start_pos) && in_bounds?(end_pos)
+  #
+  #   #piece.moves
+  #
+  # end
+
+  def in_bounds?(pos) #PRIVATE?
     pos.all? { |x| x.between?(0, 7) }
   end
 end
 
 b = Board.new
-d = Display.new(b)
-# r = King.new(b, :white, [5, 4])
-# puts r.symbol
-# p r.moves
-
-result = nil
-until result
-d.render
-  result = d.get_input
-end
-result
+c = b.dup
+c[[2,4]] = King.new(c, :white, [2, 4])
+e = Display.new(c)
+e.render
+p c.checkmate?(:white)
+# result = nil
+# until result
+# d.render
+#   result = d.get_input
+# end
+# result
