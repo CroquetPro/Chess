@@ -1,6 +1,7 @@
 require 'colorize'
 # require_relative 'piece.rb'
 require_relative 'cursor'
+require_relative 'piece.rb'
 
 class Display
   include Cursor
@@ -33,11 +34,15 @@ class Display
       background = :light_white
     end
 
-    {background: background, color: :light_magenta}
+    {background: background, color: :magenta}
   end
 
   def render
     system("clear")
-    build_grid.each {|row| puts row.join}
+    letters = ("A".."H").to_a.join("  ")
+    puts "   #{letters}  "
+    build_grid.each_with_index do |row, i|
+      puts "#{8 - i} #{row.join}"
+    end
   end
 end

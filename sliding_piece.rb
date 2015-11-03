@@ -13,10 +13,9 @@ class SlidingPiece < Piece
         row += dir[0]
         col += dir[1]
         poss_move = [row, col]
-        # return moves if occupied?(poss_move)
-        #break early if already out bounds?
+        return moves if friend?(poss_move)
         moves << poss_move if in_bounds?(poss_move)
-        # return moves if enemy?(poss_move)
+        return moves if enemy?(poss_move)
       end
 
     end
@@ -29,7 +28,6 @@ class SlidingPiece < Piece
 end
 
 class Bishop < SlidingPiece
-  attr_reader :symbol
 
   def initialize(board, color, pos)
     @symbol = :B
@@ -43,7 +41,6 @@ class Bishop < SlidingPiece
 end
 
 class Rook < SlidingPiece
-  attr_reader :symbol
 
   def initialize(board, color, pos)
     @symbol = :R
@@ -57,8 +54,7 @@ class Rook < SlidingPiece
 end
 
 class Queen < SlidingPiece
-  attr_reader :symbol
-  
+
   def initialize(board, color, pos)
     @symbol = :Q
     super(board, color, pos)

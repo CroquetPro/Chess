@@ -1,4 +1,6 @@
 require_relative 'sliding_piece.rb'
+require_relative 'stepping_piece.rb'
+require_relative 'pawn.rb'
 require_relative 'piece.rb'
 require_relative 'display.rb'
 
@@ -25,9 +27,38 @@ class Board
 
       row.each_with_index do |val, col_idx|
         if row_idx < 2
-          @grid[row_idx][col_idx] = Piece.new(self, :black, [row_idx, col_idx]) ##board, color, pos,
+          color = :black
+          if row_idx == 0 && (col_idx == 0 || col_idx == 7)
+            @grid[row_idx][col_idx] = Rook.new(self, color, [row_idx, col_idx])
+        #   @grid[row_idx][col_idx] = Piece.new(self, :black, [row_idx, col_idx]) ##board, color, pos,
+          elsif row_idx == 0 && (col_idx == 1 || col_idx == 6)
+            @grid[row_idx][col_idx] = Knight.new(self, color, [row_idx, col_idx])
+          elsif row_idx == 0 && (col_idx == 2 || col_idx == 5)
+            @grid[row_idx][col_idx] = Bishop.new(self, color, [row_idx, col_idx])
+          elsif row_idx == 0 && col_idx == 3
+            @grid[row_idx][col_idx] = Queen.new(self, color, [row_idx, col_idx])
+          elsif row_idx == 0 && col_idx == 4
+            @grid[row_idx][col_idx] = King.new(self, color, [row_idx, col_idx])
+          elsif row_idx == 1
+              @grid[row_idx][col_idx] = Pawn.new(self, color, [row_idx, col_idx])
+          end
         elsif row_idx > 5
-          @grid[row_idx][col_idx] = Piece.new(self, :white, [row_idx, col_idx])
+          color = :white
+          if row_idx == 7 && (col_idx == 0 || col_idx == 7)
+            @grid[row_idx][col_idx] = Rook.new(self, color, [row_idx, col_idx])
+        #   @grid[row_idx][col_idx] = Piece.new(self, :black, [row_idx, col_idx]) ##board, color, pos,
+          elsif row_idx == 7 && (col_idx == 1 || col_idx == 6)
+            @grid[row_idx][col_idx] = Knight.new(self, color, [row_idx, col_idx])
+          elsif row_idx == 7 && (col_idx == 2 || col_idx == 5)
+            @grid[row_idx][col_idx] = Bishop.new(self, color, [row_idx, col_idx])
+          elsif row_idx == 7 && col_idx == 3
+            @grid[row_idx][col_idx] = Queen.new(self, color, [row_idx, col_idx])
+          elsif row_idx == 7 && col_idx == 4
+            @grid[row_idx][col_idx] = King.new(self, color, [row_idx, col_idx])
+          elsif row_idx == 6
+            @grid[row_idx][col_idx] = Pawn.new(self, color, [row_idx, col_idx])
+          end
+        #   @grid[row_idx][col_idx] = Piece.new(self, :white, [row_idx, col_idx])
         else
           @grid[row_idx][col_idx] = NullPiece.new
         end
@@ -59,13 +90,13 @@ end
 
 b = Board.new
 d = Display.new(b)
-r = Rook.new(b, :white, [4,4])
-puts r.symbol
-p r.moves
+# r = King.new(b, :white, [5, 4])
+# puts r.symbol
+# p r.moves
 
 # result = nil
 # until result
-#   d.render
+d.render
 #   result = d.get_input
 # end
 # result

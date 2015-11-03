@@ -1,4 +1,8 @@
+require 'colorize'
+
 class Piece
+  attr_reader :symbol, :color, :pos
+
   def initialize(board, color, pos)
     @board = board
     @color = color
@@ -13,13 +17,24 @@ class Piece
     pos.all? { |x| x.between?(0, 7) }
   end
 
-  def move
-
-
+  def friend?(poss_move)
+    return true if @board[poss_move].color == self.color
+    return false
   end
 
+  def enemy?(poss_move)
+    enemy = self.color == :white ? :black : :white
+    return true if @board[poss_move].color == enemy
+    return false
+  end
+
+  # def moves
+  #
+  # end
+
   def to_s
-    " x "
+    # if self.color == :white
+    " #{self.symbol} "
   end
 end
 
