@@ -2,7 +2,8 @@ require 'colorize'
 require 'byebug'
 
 class Piece
-  attr_reader :symbol, :color, :pos
+  attr_reader :symbol, :color
+  attr_accessor :pos
 
   def initialize(board, color, pos)
     @board = board
@@ -33,11 +34,15 @@ class Piece
   def valid_moves
     valid_moves = []
     start_board = @board
+
     moves.each do |poss_move|
+      # debugger
       duped_board = @board.dup
       piece = duped_board[@pos]
       duped_board.move!(@pos, poss_move)
+      next if poss_move.empty?
       valid_moves << poss_move unless duped_board.in_check?(piece.color)
+
     end
 
     valid_moves

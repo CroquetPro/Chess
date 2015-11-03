@@ -68,11 +68,15 @@ class Board
   end
 
   def move(start_pos, end_pos)
-    raise "No piece at #{start_pos}." if self[start_pos].nil?
-    raise "Invalid move" if valid_pos?(start_pos, end_pos)
+    piece = self[start_pos]
 
-    self[start_pos], self[end_pos] = nil, self[start_pos]
+    raise "No piece at #{start_pos}." if self[start_pos].is_a?(NullPiece)
+    # raise "That doesn't belong to you!"
+    unless piece.valid_moves.include?(end_pos)
+      raise "That would put you in check!"
+    end
 
+    move!(start_pos, end_pos)
   end
 
   def in_check?(color)
@@ -88,10 +92,10 @@ class Board
     @grid.each do |row|
       row.each do |piece|
         next if piece.color != color
-        valid_moves << piece.valid_moves
+        valid_moves.concat(piece.valid_moves) unless piece.valid_moves == []
       end
     end
-
+    p valid_moves
     return true if in_check?(color) && valid_moves.empty?
     return false
   end
@@ -134,13 +138,18 @@ class Board
 
   def move!(start_pos, end_pos)
     # debugger
-    start = self[start_pos]
+    mov_piece = self[start_pos]
     target = self[end_pos]
 
     if target.is_a?(NullPiece)
-      start, target = target, start
+      mov_piece.pos = end_pos
+      self[end_pos] = mov_piece
+      self[start_pos] = target
+
     elsif target.enemy?(end_pos)
-      start, target = NullPiece.new, start
+      mov_piece.pos = end_pos
+      self[end_pos] = mov_piece
+      self[start_pos] = NullPiece.new
     end
   end
 
@@ -157,11 +166,29 @@ class Board
 end
 
 b = Board.new
-c = b.dup
-c[[2,4]] = King.new(c, :white, [2, 4])
-e = Display.new(c)
+# c = b.dup
+# # c[[2,4]] = King.new(c, :white, [2, 4])
+# # c[[3,0]] = Rook.new(c, :black, [3, 0])
+# # c[[3,2]] = Bishop.new(c, :white, [3, 2])
+# p c[[3,0]].moves
+
+e = Display.new(b)
 e.render
-p c.checkmate?(:white)
+sleep(1)
+b.move([6, 5], [5,5])
+e.render
+sleep(1)
+b.move([1, 4], [3,4])
+e.render
+sleep(1)
+b.move([6, 6], [4,6])
+e.render
+sleep(1)
+b.move([0, 3], [4,7])
+e.render
+p b.checkmate?(:white)
+
+# p c.checkmate?(:white)
 # result = nil
 # until result
 # d.render

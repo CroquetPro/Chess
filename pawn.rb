@@ -1,6 +1,6 @@
 class Pawn < Piece
   attr_reader :pos
-  
+
   def initialize(board, color, pos)
     @symbol = :i
     super(board, color, pos)
@@ -17,11 +17,14 @@ class Pawn < Piece
 
   def starting_moves #PRIVATE?
     moves = []
-    if self.color == :black
-      moves << [@pos[0] + 2, @pos[1]] if @pos[0] == 1
-    elsif self.color == :white
-      moves << [@pos[0] - 2, @pos[1]] if @pos[0] == 6
-    end
+
+      if self.color == :black
+        new_pos = [@pos[0] + 2, @pos[1]]
+        moves << new_pos if @pos[0] == 1 unless occupied?(new_pos)
+      elsif self.color == :white
+        new_pos = [@pos[0] - 2, @pos[1]]
+        moves << new_pos if @pos[0] == 6 unless occupied?(new_pos)
+      end
 
     moves
   end
