@@ -1,3 +1,4 @@
+require_relative 'sliding_piece.rb'
 require_relative 'piece.rb'
 require_relative 'display.rb'
 
@@ -24,9 +25,9 @@ class Board
 
       row.each_with_index do |val, col_idx|
         if row_idx < 2
-          @grid[row_idx][col_idx] = Piece.new(:black)
+          @grid[row_idx][col_idx] = Piece.new(self, :black, [row_idx, col_idx]) ##board, color, pos,
         elsif row_idx > 5
-          @grid[row_idx][col_idx] = Piece.new(:white)
+          @grid[row_idx][col_idx] = Piece.new(self, :white, [row_idx, col_idx])
         else
           @grid[row_idx][col_idx] = NullPiece.new
         end
@@ -58,9 +59,13 @@ end
 
 b = Board.new
 d = Display.new(b)
-result = nil
-until result
-  d.render
-  result = d.get_input
-end
-result
+r = Rook.new(b, :white, [4,4])
+puts r.symbol
+p r.moves
+
+# result = nil
+# until result
+#   d.render
+#   result = d.get_input
+# end
+# result
