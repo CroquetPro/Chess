@@ -94,9 +94,9 @@ d = Display.new(b)
 # puts r.symbol
 # p r.moves
 
-# result = nil
-# until result
+result = nil
+until result
 d.render
-#   result = d.get_input
-# end
-# result
+  result = d.get_input
+end
+result

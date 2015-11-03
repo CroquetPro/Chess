@@ -20,21 +20,27 @@ class Display
 
   def build_row(row, i)
     row.map.with_index do |piece, j|
-      color_options = colors_for(i, j)
+      if piece.present?
+        color = piece.color
+      else
+        color = :magenta
+      end
+      color_options = colors_for(i, j, color)
       piece.to_s.colorize(color_options) #piece color
     end
   end
 
-  def colors_for(i, j)
+  def colors_for(i, j, color)
     if [i, j] == @cursor_pos
       background = :light_green
     elsif (i + j).odd?
-      background = :light_black
+      background = :light_red
     else
-      background = :light_white
+      background = :light_blue
     end
 
-    {background: background, color: :magenta}
+    {background: background , color: color}
+
   end
 
   def render
