@@ -68,12 +68,13 @@ class Board
   end
 
   def move(start_pos, end_pos)
+    # debugger
     piece = self[start_pos]
 
-    raise "No piece at #{start_pos}." if self[start_pos].is_a?(NullPiece)
+    raise PieceError.new if self[start_pos].is_a?(NullPiece)
     # raise "That doesn't belong to you!"
     unless piece.valid_moves.include?(end_pos)
-      raise "That would put you in check!"
+      raise CheckError.new
     end
 
     move!(start_pos, end_pos)
@@ -95,7 +96,8 @@ class Board
         valid_moves.concat(piece.valid_moves) unless piece.valid_moves == []
       end
     end
-    p valid_moves
+
+    valid_moves
     return true if in_check?(color) && valid_moves.empty?
     return false
   end
@@ -145,8 +147,8 @@ class Board
       mov_piece.pos = end_pos
       self[end_pos] = mov_piece
       self[start_pos] = target
-
-    elsif target.enemy?(end_pos)
+    elsif mov_piece.enemy?(end_pos)
+      # debugger
       mov_piece.pos = end_pos
       self[end_pos] = mov_piece
       self[start_pos] = NullPiece.new
@@ -165,28 +167,38 @@ class Board
   end
 end
 
-b = Board.new
-# c = b.dup
-# # c[[2,4]] = King.new(c, :white, [2, 4])
-# # c[[3,0]] = Rook.new(c, :black, [3, 0])
-# # c[[3,2]] = Bishop.new(c, :white, [3, 2])
-# p c[[3,0]].moves
+class PieceError < StandardError
+end
 
-e = Display.new(b)
-e.render
-sleep(1)
-b.move([6, 5], [5,5])
-e.render
-sleep(1)
-b.move([1, 4], [3,4])
-e.render
-sleep(1)
-b.move([6, 6], [4,6])
-e.render
-sleep(1)
-b.move([0, 3], [4,7])
-e.render
-p b.checkmate?(:white)
+class CheckError < StandardError
+end
+
+# b = Board.new
+# # c = b.dup
+# # # c[[2,4]] = King.new(c, :white, [2, 4])
+# # # c[[3,0]] = Rook.new(c, :black, [3, 0])
+# # # c[[3,2]] = Bishop.new(c, :white, [3, 2])
+# # p c[[3,0]].moves
+#
+# e = Display.new(b)
+# e.render
+# sleep(1)
+# b.move([6, 5], [5,5])
+# e.render
+# sleep(1)
+# b.move([1, 4], [3,4])
+# e.render
+# sleep(1)
+# b.move([6, 6], [4,6])
+# e.render
+# sleep(1)
+# b.move([0, 3], [3,6])
+# e.render
+# sleep(1)
+# b.move([3, 6], [4, 6])
+# sleep(1)
+# e.render
+
 
 # p c.checkmate?(:white)
 # result = nil

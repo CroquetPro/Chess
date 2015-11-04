@@ -19,11 +19,18 @@ class Pawn < Piece
     moves = []
 
       if self.color == :black
+        return [] unless @pos[0] == 1
         new_pos = [@pos[0] + 2, @pos[1]]
-        moves << new_pos if @pos[0] == 1 unless occupied?(new_pos)
+        jumped_pos = [@pos[0] + 1, @pos [1]]
+        unless occupied?(new_pos) || occupied?(jumped_pos)
+          moves << new_pos
+        end
       elsif self.color == :white
         new_pos = [@pos[0] - 2, @pos[1]]
-        moves << new_pos if @pos[0] == 6 unless occupied?(new_pos)
+        jumped_pos = [@pos[0] - 1, @pos [1]]
+        unless occupied?(new_pos) || occupied?(jumped_pos)
+          moves << new_pos if @pos[0] == 6
+        end
       end
 
     moves

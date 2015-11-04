@@ -20,6 +20,7 @@ class Piece
   end
 
   def friend?(poss_move)
+    # debugger
     return true if @board[poss_move].color == self.color
     return false
   end

@@ -8,7 +8,7 @@ class Display
 
   def initialize(board)
     @cursor_pos = [0, 0]
-    @selected = false
+    @selected_pos = []
     @board = board
   end
 
@@ -33,6 +33,8 @@ class Display
   def colors_for(i, j, color)
     if [i, j] == @cursor_pos
       background = :light_green
+    elsif [i, j] == @selected_pos
+      background = :magenta
     elsif (i + j).odd?
       background = :light_red
     else

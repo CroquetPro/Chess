@@ -41,8 +41,8 @@ module Cursor
     when :ctrl_c
       exit 0
     when :return, :space
-      @cursor_pos
-      #find piece at cursor_pos, change @selected to true
+      @selected_pos = @cursor_pos
+      return @selected_pos
     when :left, :right, :up, :down
       update_pos(MOVES[key])
       nil
