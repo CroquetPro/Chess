@@ -35,6 +35,10 @@ class King < SteppingPiece
     super(board, color, pos)
   end
 
+  def to_s
+    " K "
+  end
+
 
   def move_diff
     [[1, 1], [1, -1], [-1, 1], [-1, -1],

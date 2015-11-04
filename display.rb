@@ -1,13 +1,16 @@
 require 'colorize'
-# require_relative 'piece.rb'
+
 require_relative 'cursor'
 require_relative 'piece.rb'
 
 class Display
   include Cursor
 
+  attr_accessor :selected
+
   def initialize(board)
     @cursor_pos = [0, 0]
+    @selected = false
     @selected_pos = []
     @board = board
   end
@@ -33,7 +36,7 @@ class Display
   def colors_for(i, j, color)
     if [i, j] == @cursor_pos
       background = :light_green
-    elsif [i, j] == @selected_pos
+    elsif [i, j] == @selected_pos && selected
       background = :magenta
     elsif (i + j).odd?
       background = :light_red

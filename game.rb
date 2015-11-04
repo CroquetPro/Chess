@@ -3,6 +3,7 @@ require_relative 'player.rb'
 require_relative 'display.rb'
 
 class Game
+  attr_reader :current_player
 
   def initialize(name1, name2)
     @board = Board.new
@@ -17,19 +18,21 @@ class Game
     until @board.checkmate?(:black) || @board.checkmate?(:white)
       @display.render
 
-      if @board.in_check?(@current_player.color)
-        puts "#{@current_player.color} is in check!"
-      end
-
       begin
-        start_pos = @current_player.take_turn
-        end_pos = @current_player.take_turn
-        @board.move(start_pos, end_pos)
+        moves = @current_player.get_move
+        start_pos = moves[0]
+
+        if @board[start_pos].color == @current_player.color
+          @board.move(*moves)
+        else
+          raise PieceError.new
+        end
+
       rescue PieceError => e
-        puts "No piece at selected position!"
+        p "Wrong piece!"
         retry
       rescue CheckError => e
-        puts "That would put you in check!"
+        p "That would put you in check!"
         retry
       end
 

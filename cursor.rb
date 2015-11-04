@@ -42,6 +42,7 @@ module Cursor
       exit 0
     when :return, :space
       @selected_pos = @cursor_pos
+      @selected = true 
       return @selected_pos
     when :left, :right, :up, :down
       update_pos(MOVES[key])
